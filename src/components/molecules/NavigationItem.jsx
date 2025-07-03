@@ -7,11 +7,12 @@ const NavigationItem = ({ to, icon, label, badge = null, onClick }) => {
     <NavLink
       to={to}
       onClick={onClick}
-      className={({ isActive }) => `
-        flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200
+className={({ isActive }) => `
+        flex items-center space-x-2 sm:space-x-3 px-3 py-2.5 sm:px-4 sm:py-3 rounded-md sm:rounded-lg 
+        text-sm font-medium transition-all duration-200 touch-manipulation
         ${isActive 
-          ? 'bg-gradient-primary text-white shadow-lg' 
-          : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
+          ? 'bg-gradient-primary text-white shadow-lg transform scale-[0.98] sm:scale-100' 
+          : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50 active:scale-[0.96]'
         }
       `}
     >

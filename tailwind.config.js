@@ -72,10 +72,22 @@ export default {
         'display': ['Plus Jakarta Sans', 'sans-serif'],
         'body': ['Inter', 'sans-serif'],
       },
-      spacing: {
+spacing: {
         '18': '4.5rem',
         '88': '22rem',
         '128': '32rem',
+        '144': '36rem',
+        '160': '40rem',
+        '176': '44rem',
+        '192': '48rem',
+      },
+      screens: {
+        'xs': '475px',
+        '3xl': '1920px',
+      },
+      maxWidth: {
+        '8xl': '88rem',
+        '9xl': '96rem',
       },
       backdropBlur: {
         'xs': '2px',

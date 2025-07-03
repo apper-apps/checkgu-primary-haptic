@@ -13,8 +13,8 @@ const Sidebar = ({ isOpen, onClose }) => {
 
 return (
     <>
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:block w-64 bg-white border-r border-gray-200 shadow-sm flex-shrink-0">
+{/* Desktop Sidebar */}
+      <div className="hidden lg:block dynamic-sidebar-width bg-white border-r border-gray-200 shadow-sm flex-shrink-0 transition-all duration-300">
         <div className="h-full flex flex-col">
           <div className="px-4 py-6 lg:px-6 border-b border-gray-200">
             <div className="flex items-center space-x-3">
@@ -66,8 +66,8 @@ return (
               initial={{ x: -320 }}
               animate={{ x: 0 }}
               exit={{ x: -320 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-80 max-w-[85vw] bg-white shadow-2xl"
+transition={{ type: "spring", damping: 30, stiffness: 400 }}
+              className="relative dynamic-mobile-sidebar-width max-w-[85vw] bg-white shadow-2xl"
             >
               <div className="h-full flex flex-col">
                 <div className="px-4 py-6 border-b border-gray-200">

@@ -8,11 +8,12 @@ const Card = ({ children, className = '', hover = false, ...props }) => {
     transition: { duration: 0.2 }
   } : {}
 
-  return (
+return (
     <Component
       className={`
-        bg-gradient-card rounded-lg border border-gray-200 shadow-card
-        ${hover ? 'hover:shadow-hover cursor-pointer' : ''}
+        bg-gradient-card rounded-md sm:rounded-lg border border-gray-200 shadow-card
+        transition-all duration-200
+        ${hover ? 'hover:shadow-hover hover:border-gray-300 cursor-pointer' : ''}
         ${className}
       `}
       {...motionProps}

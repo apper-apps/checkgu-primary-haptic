@@ -22,11 +22,11 @@ const Button = ({
     ghost: "text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:ring-primary-500 disabled:opacity-50"
   }
   
-  const sizes = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2 text-sm",
-    lg: "px-6 py-3 text-base",
-    xl: "px-8 py-4 text-lg"
+const sizes = {
+    sm: "px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm",
+    md: "px-3 py-1.5 text-sm sm:px-4 sm:py-2",
+    lg: "px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base",
+    xl: "px-6 py-3 text-base sm:px-8 sm:py-4 sm:text-lg"
   }
   
   const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`

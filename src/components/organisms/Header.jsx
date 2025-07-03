@@ -22,9 +22,8 @@ return (
               </div>
               <span className="text-base sm:text-lg font-bold text-gradient truncate">Checkgu</span>
             </div>
-            
-            <div className="hidden lg:block min-w-0">
-              <h1 className="text-xl xl:text-2xl font-bold text-gray-900 truncate">{title}</h1>
+<div className="hidden lg:block min-w-0 flex-1">
+              <h1 className="dynamic-title-text font-bold text-gray-900 truncate">{title}</h1>
             </div>
           </div>
           
