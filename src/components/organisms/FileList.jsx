@@ -9,13 +9,19 @@ import Badge from '@/components/atoms/Badge'
 import Loading from '@/components/ui/Loading'
 import Error from '@/components/ui/Error'
 import Empty from '@/components/ui/Empty'
+import GoogleDriveModal from '@/components/organisms/GoogleDriveModal'
 import { lessonPlanService } from '@/services/api/lessonPlanService'
+import { googleDriveService } from '@/services/api/googleDriveService'
+import { userSettingsService } from '@/services/api/userSettingsService'
 
 const FileList = ({ searchTerm = '', limit = null }) => {
   const [files, setFiles] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
+  const [showGoogleDriveModal, setShowGoogleDriveModal] = useState(false)
+  const [currentExportFile, setCurrentExportFile] = useState(null)
+  const [googleDriveConnected, setGoogleDriveConnected] = useState(false)
+  const [exportingFiles, setExportingFiles] = useState(new Set())
   const loadFiles = async () => {
     setLoading(true)
     setError('')
@@ -32,9 +38,21 @@ const FileList = ({ searchTerm = '', limit = null }) => {
     }
   }
 
-  useEffect(() => {
+useEffect(() => {
     loadFiles()
+    checkGoogleDriveStatus()
   }, [])
+
+  const checkGoogleDriveStatus = async () => {
+    try {
+      const settings = await userSettingsService.getAll()
+      if (settings.length > 0) {
+        setGoogleDriveConnected(settings[0].googleDriveConnected || false)
+      }
+    } catch (err) {
+      console.error('Error checking Google Drive status:', err)
+    }
+  }
 
   const filteredFiles = files.filter(file =>
     file.fileName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -61,6 +79,64 @@ const FileList = ({ searchTerm = '', limit = null }) => {
         toast.error('Failed to delete file')
         console.error('Error deleting file:', err)
       }
+    }
+}
+
+  const handleExportToGoogleDrive = async (file) => {
+    if (!googleDriveConnected) {
+      setCurrentExportFile(file)
+      setShowGoogleDriveModal(true)
+      return
+    }
+
+    setExportingFiles(prev => new Set([...prev, file.Id]))
+
+    try {
+      const result = await googleDriveService.exportFile(file)
+      
+      if (result.success) {
+        // Update file with export status
+        await lessonPlanService.update(file.Id, {
+          googleDriveExported: true,
+          googleDriveUrl: result.driveUrl,
+          exportedAt: new Date().toISOString()
+        })
+
+        setFiles(files.map(f => 
+          f.Id === file.Id 
+            ? { ...f, googleDriveExported: true, googleDriveUrl: result.driveUrl }
+            : f
+        ))
+
+        toast.success('File exported to Google Drive successfully!')
+      }
+    } catch (err) {
+      if (err.message === 'Google Drive not connected') {
+        setCurrentExportFile(file)
+        setShowGoogleDriveModal(true)
+      } else {
+        toast.error('Failed to export file to Google Drive')
+        console.error('Export error:', err)
+      }
+    } finally {
+      setExportingFiles(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(file.Id)
+        return newSet
+      })
+    }
+  }
+
+  const handleGoogleDriveConnect = async () => {
+    setShowGoogleDriveModal(false)
+    await checkGoogleDriveStatus()
+    
+    // If there was a pending export, retry it
+    if (currentExportFile) {
+      setTimeout(() => {
+        handleExportToGoogleDrive(currentExportFile)
+        setCurrentExportFile(null)
+      }, 500)
     }
   }
 
@@ -153,16 +229,29 @@ const FileList = ({ searchTerm = '', limit = null }) => {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-2">
+<div className="flex items-center space-x-2">
                 {file.status === 'completed' && (
-                  <Button
-                    variant="success"
-                    size="sm"
-                    icon="Download"
-                    onClick={() => handleDownload(file)}
-                  >
-                    Download
-                  </Button>
+                  <>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      icon="Download"
+                      onClick={() => handleDownload(file)}
+                    >
+                      Download
+                    </Button>
+                    
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      icon="HardDrive"
+                      onClick={() => handleExportToGoogleDrive(file)}
+                      loading={exportingFiles.has(file.Id)}
+                      className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
+                    >
+                      {file.googleDriveExported ? 'Exported' : 'Export to Drive'}
+                    </Button>
+                  </>
                 )}
                 
                 {file.status === 'processing' && (
@@ -200,7 +289,16 @@ const FileList = ({ searchTerm = '', limit = null }) => {
             </div>
           </Card>
         </motion.div>
-      ))}
+))}
+      
+      <GoogleDriveModal
+        isOpen={showGoogleDriveModal}
+        onClose={() => {
+          setShowGoogleDriveModal(false)
+          setCurrentExportFile(null)
+        }}
+        onConnect={handleGoogleDriveConnect}
+      />
     </div>
   )
 }

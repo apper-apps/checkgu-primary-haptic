@@ -5,7 +5,9 @@ import Card from '@/components/atoms/Card'
 import Button from '@/components/atoms/Button'
 import Input from '@/components/atoms/Input'
 import ApperIcon from '@/components/ApperIcon'
+import GoogleDriveModal from '@/components/organisms/GoogleDriveModal'
 import { userSettingsService } from '@/services/api/userSettingsService'
+import { googleDriveService } from '@/services/api/googleDriveService'
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState({
@@ -13,12 +15,14 @@ const SettingsPage = () => {
     schoolId: '',
     defaultTemplate: '',
     googleDriveEnabled: false,
+    googleDriveConnected: false,
+    googleDriveEmail: '',
     autoProcess: true,
     emailNotifications: true,
     darkMode: false
   })
   const [loading, setLoading] = useState(false)
-
+  const [showGoogleDriveModal, setShowGoogleDriveModal] = useState(false)
   useEffect(() => {
     loadSettings()
   }, [])
@@ -54,11 +58,44 @@ const SettingsPage = () => {
     }))
   }
 
-  const handleToggle = (field) => {
+const handleToggle = (field) => {
+    if (field === 'googleDriveEnabled') {
+      if (!settings.googleDriveConnected) {
+        setShowGoogleDriveModal(true)
+        return
+      }
+    }
+    
     setSettings(prev => ({
       ...prev,
       [field]: !prev[field]
     }))
+  }
+
+  const handleGoogleDriveConnect = async (result) => {
+    setSettings(prev => ({
+      ...prev,
+      googleDriveEnabled: true,
+      googleDriveConnected: true,
+      googleDriveEmail: result.userEmail
+    }))
+    setShowGoogleDriveModal(false)
+  }
+
+  const handleGoogleDriveDisconnect = async () => {
+    try {
+      await googleDriveService.disconnect()
+      setSettings(prev => ({
+        ...prev,
+        googleDriveEnabled: false,
+        googleDriveConnected: false,
+        googleDriveEmail: ''
+      }))
+      toast.success('Google Drive disconnected successfully!')
+    } catch (err) {
+      toast.error('Failed to disconnect Google Drive')
+      console.error('Disconnect error:', err)
+    }
   }
 
   return (
@@ -121,25 +158,49 @@ const SettingsPage = () => {
           </h2>
           
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-gray-900">Google Drive Integration</h3>
-                <p className="text-sm text-gray-500">Enable Google Drive for file storage</p>
-              </div>
-              <button
-                onClick={() => handleToggle('googleDriveEnabled')}
-                className={`
-                  relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-                  ${settings.googleDriveEnabled ? 'bg-primary-600' : 'bg-gray-200'}
-                `}
-              >
-                <span
+<div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900">Google Drive Integration</h3>
+                  <p className="text-sm text-gray-500">
+                    {settings.googleDriveConnected 
+                      ? `Connected as ${settings.googleDriveEmail}` 
+                      : 'Enable Google Drive for file storage'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleToggle('googleDriveEnabled')}
                   className={`
-                    inline-block h-4 w-4 transform rounded-full bg-white transition-transform
-                    ${settings.googleDriveEnabled ? 'translate-x-6' : 'translate-x-1'}
+                    relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                    ${settings.googleDriveConnected ? 'bg-primary-600' : 'bg-gray-200'}
                   `}
-                />
-              </button>
+                >
+                  <span
+                    className={`
+                      inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                      ${settings.googleDriveConnected ? 'translate-x-6' : 'translate-x-1'}
+                    `}
+                  />
+                </button>
+              </div>
+
+              {settings.googleDriveConnected && (
+                <div className="flex items-center justify-between pl-4 border-l-2 border-primary-200">
+                  <div className="flex items-center space-x-2">
+                    <ApperIcon name="CheckCircle" size={16} className="text-green-600" />
+                    <span className="text-sm text-green-700 font-medium">Connected</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    icon="Unlink"
+                    onClick={handleGoogleDriveDisconnect}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Disconnect
+                  </Button>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center justify-between">
@@ -250,8 +311,14 @@ const SettingsPage = () => {
           icon="Save"
         >
           Save Settings
-        </Button>
+</Button>
       </div>
+
+      <GoogleDriveModal
+        isOpen={showGoogleDriveModal}
+        onClose={() => setShowGoogleDriveModal(false)}
+        onConnect={handleGoogleDriveConnect}
+      />
     </div>
   )
 }

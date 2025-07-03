@@ -20,12 +20,15 @@ class LessonPlanService {
     return item ? { ...item } : null
   }
 
-  async create(item) {
+async create(item) {
     await this.delay()
     const newId = Math.max(...this.data.map(item => item.Id), 0) + 1
     const newItem = {
       ...item,
-      Id: newId
+      Id: newId,
+      googleDriveExported: false,
+      googleDriveUrl: '',
+      exportedAt: null
     }
     this.data.push(newItem)
     return { ...newItem }
