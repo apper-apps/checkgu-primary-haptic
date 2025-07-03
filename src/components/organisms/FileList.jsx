@@ -75,13 +75,22 @@ const handleDownload = async (file) => {
         throw new Error('Invalid file data received from service')
       }
       
+      // Additional validation for DOCX files
+      if (fileBlob.size === 0) {
+        throw new Error('Downloaded file is empty')
+      }
+      
+      // Ensure proper file extension
+      const fileName = file.fileName || 'download'
+      const finalFileName = fileName.endsWith('.docx') ? fileName : `${fileName}.docx`
+      
       // Create download URL
       const downloadUrl = window.URL.createObjectURL(fileBlob)
       
       // Create temporary anchor element for download
       const link = document.createElement('a')
       link.href = downloadUrl
-      link.download = file.fileName || 'download'
+      link.download = finalFileName
       link.style.display = 'none'
       
       // Trigger download
@@ -92,15 +101,19 @@ const handleDownload = async (file) => {
       document.body.removeChild(link)
       window.URL.revokeObjectURL(downloadUrl)
       
-      toast.success(`Downloaded ${file.fileName}`)
+      toast.success(`Downloaded ${finalFileName}`)
     } catch (error) {
       console.error('Download error:', error)
-      if (error.message.includes('createObjectURL')) {
+      if (error.message.includes('DOCX generation failed')) {
+        toast.error('Failed to generate DOCX file - file may be corrupted')
+      } else if (error.message.includes('createObjectURL')) {
         toast.error('Failed to create download link - invalid file format')
       } else if (error.message.includes('Invalid file data')) {
         toast.error('File service returned invalid data')
+      } else if (error.message.includes('empty')) {
+        toast.error('Downloaded file is empty - please try again')
       } else {
-        toast.error(`Failed to download ${file.fileName}`)
+        toast.error(`Failed to download ${file.fileName || 'file'}`)
       }
     }
   }

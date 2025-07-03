@@ -1,5 +1,4 @@
-import React from "react";
-import Error from "@/components/ui/Error";
+import JSZip from 'jszip';
 import lessonPlansData from "@/services/mockData/lessonPlans.json";
 
 class LessonPlanService {
@@ -68,43 +67,89 @@ async downloadFile(id) {
         throw new Error('File is not ready for download')
       }
       
-      // Create a minimal but valid DOCX file structure
-      // This generates a proper DOCX file that Word can open successfully
-      const docxContent = this.generateValidDocxContent(item)
+      // Generate proper DOCX file using JSZip
+      const docxBuffer = await this.generateValidDocxContent(item)
       
-      // Use proper DOCX MIME type to ensure Word recognizes the format
-      const blob = new Blob([docxContent], {
+      // Create blob with proper DOCX MIME type
+      const blob = new Blob([docxBuffer], {
         type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       })
       
       return blob
     } catch (error) {
       console.error('Download error:', error)
-      throw error
+      throw new Error(`Failed to generate DOCX file: ${error.message}`)
     }
   }
 
-  generateValidDocxContent(item) {
-    // Create a minimal DOCX structure with proper XML formatting
-    // This creates a valid DOCX file that Word can open without errors
-    const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+async generateValidDocxContent(item) {
+    try {
+      // Create a proper DOCX file using JSZip
+      const zip = new JSZip()
+      
+      // Content Types file - defines MIME types for all parts
+      const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
 </Types>`
-
-    const relationships = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+      
+      // Root relationships file
+      const rootRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
 </Relationships>`
-
-    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+      
+      // Word document relationships
+      const wordRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`
+      
+      // Document styles
+      const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:docDefaults>
+    <w:rPrDefault>
+      <w:rPr>
+        <w:rFonts w:ascii="Calibri" w:eastAsia="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>
+        <w:sz w:val="22"/>
+        <w:szCs w:val="22"/>
+      </w:rPr>
+    </w:rPrDefault>
+  </w:docDefaults>
+  <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:pPr>
+      <w:spacing w:after="160" w:line="259" w:lineRule="auto"/>
+    </w:pPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Title">
+    <w:name w:val="Title"/>
+    <w:basedOn w:val="Normal"/>
+    <w:pPr>
+      <w:spacing w:before="240" w:after="60"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri Light" w:eastAsia="Calibri Light" w:hAnsi="Calibri Light"/>
+      <w:sz w:val="56"/>
+      <w:szCs w:val="56"/>
+    </w:rPr>
+  </w:style>
+</w:styles>`
+      
+      // Main document content with proper structure
+      const documentContent = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:body>
     <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Title"/>
+      </w:pPr>
       <w:r>
-        <w:t>Lesson Plan: ${item.fileName}</w:t>
+        <w:t>Lesson Plan: ${this.escapeXml(item.fileName || 'Untitled')}</w:t>
       </w:r>
     </w:p>
     <w:p>
@@ -114,22 +159,46 @@ async downloadFile(id) {
     </w:p>
     <w:p>
       <w:r>
-        <w:t>Subject: ${item.subject || 'N/A'}</w:t>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t>Subject: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>${this.escapeXml(item.subject || 'N/A')}</w:t>
       </w:r>
     </w:p>
     <w:p>
       <w:r>
-        <w:t>Grade: ${item.grade || 'N/A'}</w:t>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t>Grade: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>${this.escapeXml(item.grade || 'N/A')}</w:t>
       </w:r>
     </w:p>
     <w:p>
       <w:r>
-        <w:t>Upload Date: ${item.uploadDate}</w:t>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t>Upload Date: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>${this.escapeXml(new Date(item.uploadDate).toLocaleDateString())}</w:t>
       </w:r>
     </w:p>
     <w:p>
       <w:r>
-        <w:t>Status: ${item.status}</w:t>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t>Status: </w:t>
+      </w:r>
+      <w:r>
+        <w:t>${this.escapeXml(item.status)}</w:t>
       </w:r>
     </w:p>
     <w:p>
@@ -139,9 +208,18 @@ async downloadFile(id) {
     </w:p>
     <w:p>
       <w:r>
-        <w:t>This is a placeholder lesson plan document. In a production environment, this would contain the actual lesson plan content, properly formatted learning objectives, activities, and assessment criteria.</w:t>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t>Lesson Content:</w:t>
       </w:r>
     </w:p>
+    <w:p>
+      <w:r>
+        <w:t>This is a generated lesson plan document. In a production environment, this would contain the actual lesson plan content with properly formatted learning objectives, activities, and assessment criteria.</w:t>
+      </w:r>
+    </w:p>
+    ${item.placeholders ? this.generatePlaceholderContent(item.placeholders) : ''}
     <w:p>
       <w:r>
         <w:t></w:t>
@@ -149,44 +227,85 @@ async downloadFile(id) {
     </w:p>
     <w:p>
       <w:r>
-        <w:t>For full DOCX generation capabilities, consider implementing:</w:t>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Generated by Checkgu - Lesson Plan Management System</w:t>
       </w:r>
     </w:p>
-    <w:p>
-      <w:r>
-        <w:t>- Advanced formatting and styling</w:t>
-      </w:r>
-    </w:p>
-    <w:p>
-      <w:r>
-        <w:t>- Table structures for lesson components</w:t>
-      </w:r>
-    </w:p>
-    <w:p>
-      <w:r>
-        <w:t>- Image and media embedding</w:t>
-      </w:r>
-    </w:p>
-    <w:p>
-      <w:r>
-        <w:t>- Custom templates and themes</w:t>
-      </w:r>
-    </w:p>
+    <w:sectPr>
+      <w:pgSz w:w="12240" w:h="15840"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/>
+    </w:sectPr>
   </w:body>
 </w:document>`
-
-    // Create a simple ZIP-like structure for DOCX
-    // This is a minimal implementation that creates a valid DOCX structure
-    const docxStructure = [
-      '[Content_Types].xml',
-      contentTypes,
-      '_rels/.rels',
-      relationships,
-      'word/document.xml',
-      documentXml
-    ].join('\n---DOCX_SEPARATOR---\n')
-
-    return docxStructure
+      
+      // Add all files to the ZIP structure
+      zip.file('[Content_Types].xml', contentTypes)
+      zip.file('_rels/.rels', rootRels)
+      zip.file('word/_rels/document.xml.rels', wordRels)
+      zip.file('word/document.xml', documentContent)
+      zip.file('word/styles.xml', styles)
+      
+      // Generate the ZIP file as array buffer
+      const zipBuffer = await zip.generateAsync({
+        type: 'arraybuffer',
+        compression: 'DEFLATE',
+        compressionOptions: {
+          level: 6
+        }
+      })
+      
+      return zipBuffer
+    } catch (error) {
+      console.error('Error generating DOCX content:', error)
+      throw new Error(`DOCX generation failed: ${error.message}`)
+    }
+  }
+  
+  // Helper method to escape XML characters
+  escapeXml(text) {
+    if (!text) return ''
+    return text.toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;')
+  }
+  
+  // Helper method to generate placeholder content
+  generatePlaceholderContent(placeholders) {
+    if (!placeholders || typeof placeholders !== 'object') return ''
+    
+    const entries = Object.entries(placeholders)
+    if (entries.length === 0) return ''
+    
+    let content = `
+    <w:p>
+      <w:r>
+        <w:t></w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+        </w:rPr>
+        <w:t>Template Placeholders:</w:t>
+      </w:r>
+    </w:p>`
+    
+    entries.forEach(([key, value]) => {
+      content += `
+    <w:p>
+      <w:r>
+        <w:t>• ${this.escapeXml(key)}: ${this.escapeXml(value)}</w:t>
+      </w:r>
+    </w:p>`
+    })
+    
+    return content
   }
 }
 

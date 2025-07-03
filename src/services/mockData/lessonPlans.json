@@ -15,7 +15,7 @@
       "{{class}}": "Grade 5A",
       "{{teacher}}": "Ms. Johnson"
     },
-    "notes": "File has been fixed - no longer corrupted"
+    "notes": "File has been fixed - proper DOCX format with JSZip implementation"
   },
   {
     "Id": 2,
