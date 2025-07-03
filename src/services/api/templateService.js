@@ -25,7 +25,7 @@ async create(templateData) {
       name: templateData.name,
       description: templateData.description,
       category: templateData.category,
-      content: templateData.content,
+      content: templateData.content || '',
       fields: templateData.fields || [],
       layout: templateData.layout || 'single-column',
       createdAt: new Date().toISOString(),
