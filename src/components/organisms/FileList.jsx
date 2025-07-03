@@ -60,12 +60,37 @@ useEffect(() => {
 
   const displayFiles = limit ? filteredFiles.slice(0, limit) : filteredFiles
 
-  const handleDownload = (file) => {
-    if (file.status === 'completed' && file.processedUrl) {
-      // Simulate download
-      toast.success(`Downloading ${file.fileName}`)
-    } else {
+const handleDownload = async (file) => {
+    if (file.status !== 'completed') {
       toast.error('File is not ready for download')
+      return
+    }
+
+    try {
+      // Get file content from service
+      const fileBlob = await lessonPlanService.downloadFile(file.Id)
+      
+      // Create download URL
+      const downloadUrl = window.URL.createObjectURL(fileBlob)
+      
+      // Create temporary anchor element for download
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.download = file.fileName
+      link.style.display = 'none'
+      
+      // Trigger download
+      document.body.appendChild(link)
+      link.click()
+      
+      // Cleanup
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(downloadUrl)
+      
+      toast.success(`Downloaded ${file.fileName}`)
+    } catch (error) {
+      console.error('Download error:', error)
+      toast.error(`Failed to download ${file.fileName}`)
     }
   }
 
