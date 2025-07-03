@@ -116,8 +116,30 @@ canvas {
     background: linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%);
   }
   
-  .border-gradient {
+.border-gradient {
     border: 1px solid transparent;
     background: linear-gradient(white, white) padding-box, linear-gradient(135deg, #4F46E5, #7C3AED) border-box;
+  }
+
+  /* Enhanced Date Picker Styles */
+  .date-picker-calendar {
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .date-picker-day {
+    position: relative;
+    transition: all 0.15s ease-in-out;
+  }
+  
+  .date-picker-day:hover {
+    transform: scale(1.1);
+  }
+  
+  .date-picker-range-start {
+    border-radius: 0.5rem 0 0 0.5rem;
+  }
+  
+  .date-picker-range-end {
+    border-radius: 0 0.5rem 0.5rem 0;
   }
 }

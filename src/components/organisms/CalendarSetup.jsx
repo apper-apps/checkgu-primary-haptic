@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { format, addDays, startOfWeek, endOfWeek, isSameDay, isWithinInterval } from 'date-fns'
-import { toast } from 'react-toastify'
-import ApperIcon from '@/components/ApperIcon'
-import Card from '@/components/atoms/Card'
-import Button from '@/components/atoms/Button'
-import Input from '@/components/atoms/Input'
-import DatePicker from '@/components/molecules/DatePicker'
-import Loading from '@/components/ui/Loading'
-import Error from '@/components/ui/Error'
-import { schoolCalendarService } from '@/services/api/schoolCalendarService'
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { addDays, endOfWeek, format, isSameDay, isWithinInterval, startOfWeek } from "date-fns";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import DatePicker from "@/components/molecules/DatePicker";
+import { schoolCalendarService } from "@/services/api/schoolCalendarService";
 
 const CalendarSetup = () => {
   const [calendar, setCalendar] = useState(null)
@@ -382,12 +382,64 @@ const CalendarSetup = () => {
               >
                 Create Calendar
               </Button>
-            </div>
+</div>
           )}
         </Card>
       )}
+
+      {/* Date Range Picker Demo Section */}
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Enhanced Date Selection</h3>
+        <p className="text-gray-600 mb-6">
+          Experience our new date range picker with multiple selection modes for advanced calendar planning.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <DatePicker
+              label="Single Date Selection"
+              mode="single"
+              showCalendar={true}
+              placeholder="Pick a single date"
+              onChange={(date) => console.log('Single date:', date)}
+            />
+          </div>
+          
+          <div>
+            <DatePicker
+              label="Multiple Dates Selection"
+              mode="multiple"
+              showCalendar={true}
+              placeholder="Pick multiple dates"
+              onChange={(dates) => console.log('Multiple dates:', dates)}
+            />
+          </div>
+          
+          <div>
+            <DatePicker
+              label="Date Range Selection"
+              mode="range"
+              showCalendar={true}
+              placeholder="Pick a date range"
+              onChange={(range) => console.log('Date range:', range)}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 p-4 bg-primary-50 rounded-lg">
+          <div className="flex items-start space-x-3">
+            <ApperIcon name="Info" size={16} className="text-primary-600 mt-0.5" />
+            <div>
+              <h4 className="font-medium text-primary-900 mb-1">How to use the enhanced date picker:</h4>
+              <ul className="text-sm text-primary-700 space-y-1">
+                <li><strong>Single mode:</strong> Click any date to select it</li>
+                <li><strong>Multiple mode:</strong> Click dates to add/remove from selection</li>
+                <li><strong>Range mode:</strong> Click start date, then end date to create a range</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Card>
     </div>
   )
 }
-
-export default CalendarSetup
