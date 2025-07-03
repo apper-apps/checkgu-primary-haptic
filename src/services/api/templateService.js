@@ -18,7 +18,7 @@ export const templateService = {
     return { ...template }
   },
 
-  async create(templateData) {
+async create(templateData) {
     await new Promise(resolve => setTimeout(resolve, 500))
     const newTemplate = {
       Id: nextId++,
@@ -26,6 +26,8 @@ export const templateService = {
       description: templateData.description,
       category: templateData.category,
       content: templateData.content,
+      fields: templateData.fields || [],
+      layout: templateData.layout || 'single-column',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -40,12 +42,14 @@ export const templateService = {
       throw new Error('Template not found')
     }
     
-    const updatedTemplate = {
+const updatedTemplate = {
       ...templates[index],
       name: templateData.name,
       description: templateData.description,
       category: templateData.category,
       content: templateData.content,
+      fields: templateData.fields || [],
+      layout: templateData.layout || 'single-column',
       updatedAt: new Date().toISOString()
     }
     
