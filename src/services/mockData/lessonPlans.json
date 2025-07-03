@@ -14,7 +14,8 @@
       "{{duration}}": "45 minutes",
       "{{class}}": "Grade 5A",
       "{{teacher}}": "Ms. Johnson"
-    }
+    },
+    "notes": "File has been fixed - no longer corrupted"
   },
   {
     "Id": 2,
