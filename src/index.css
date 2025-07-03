@@ -33,6 +33,22 @@ body {
   margin: 0 auto;
   text-align: left;
   width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  /* Prevent zero dimensions that cause external script canvas errors */
+  position: relative;
+}
+
+/* Ensure all canvas and viewport elements have minimum dimensions */
+canvas {
+  min-width: 1px;
+  min-height: 1px;
+}
+
+/* Prevent layout shifts that might cause zero dimensions */
+* {
+  box-sizing: border-box;
 }
 
 .Toastify__toast-container {
