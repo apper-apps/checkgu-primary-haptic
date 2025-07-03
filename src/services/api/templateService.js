@@ -20,13 +20,24 @@ export const templateService = {
 
 async create(templateData) {
     await new Promise(resolve => setTimeout(resolve, 500))
+    
+    // Validate and ensure fields have proper structure
+    const validatedFields = (templateData.fields || []).map(field => ({
+      id: field?.id || Date.now() + Math.random(),
+      label: field?.label || '',
+      type: field?.type || 'text',
+      required: field?.required || false,
+      placeholder: field?.placeholder || '',
+      options: field?.options || []
+    }))
+    
     const newTemplate = {
       Id: nextId++,
       name: templateData.name,
       description: templateData.description,
       category: templateData.category,
       content: templateData.content || '',
-      fields: templateData.fields || [],
+      fields: validatedFields,
       layout: templateData.layout || 'single-column',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -42,13 +53,23 @@ async create(templateData) {
       throw new Error('Template not found')
     }
     
-const updatedTemplate = {
+// Validate and ensure fields have proper structure
+    const validatedFields = (templateData.fields || []).map(field => ({
+      id: field?.id || Date.now() + Math.random(),
+      label: field?.label || '',
+      type: field?.type || 'text',
+      required: field?.required || false,
+      placeholder: field?.placeholder || '',
+      options: field?.options || []
+    }))
+    
+    const updatedTemplate = {
       ...templates[index],
       name: templateData.name,
       description: templateData.description,
       category: templateData.category,
       content: templateData.content,
-      fields: templateData.fields || [],
+      fields: validatedFields,
       layout: templateData.layout || 'single-column',
       updatedAt: new Date().toISOString()
     }

@@ -166,16 +166,22 @@ const handleCancelEdit = () => {
     }
 
     const newField = {
-      ...fieldData,
-      id: editingField !== null ? formData.fields[editingField].id : Date.now()
+...fieldData,
+      id: editingField !== null ? (formData.fields[editingField]?.id || Date.now()) : Date.now()
+    }
+
+    // Validate field has required properties
+    if (!newField.id || !newField.label || !newField.type) {
+      console.error('Invalid field data:', newField)
+      return
     }
 
     if (editingField !== null) {
-      const updatedFields = [...formData.fields]
+      const updatedFields = [...(formData.fields || [])]
       updatedFields[editingField] = newField
       setFormData(prev => ({ ...prev, fields: updatedFields }))
     } else {
-      setFormData(prev => ({ ...prev, fields: [...prev.fields, newField] }))
+      setFormData(prev => ({ ...prev, fields: [...(prev.fields || []), newField] }))
     }
 
     setShowFieldModal(false)
@@ -1202,7 +1208,7 @@ By the end of this lesson, students will be able to:
                             ref={provided.innerRef}
                             className={`space-y-3 drag-drop-zone ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
                           >
-                            {formData.fields.map((field, index) => (
+{(formData.fields || []).filter(field => field && field.id).map((field, index) => (
                               <Draggable key={field.id} draggableId={field.id.toString()} index={index}>
                                 {(provided, snapshot) => (
                                   <div
