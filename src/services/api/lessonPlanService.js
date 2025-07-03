@@ -21,7 +21,6 @@ class LessonPlanService {
     const item = this.data.find(item => item.Id === parseInt(id))
     return item ? { ...item } : null
   }
-}
 
   async create(item) {
     await this.delay()
@@ -57,7 +56,8 @@ class LessonPlanService {
     throw new Error('Item not found')
   }
 
-  async downloadFile(id) {
+async downloadFile(id) {
+    try {
       const item = await this.getById(id)
       
       if (!item) {
@@ -110,7 +110,6 @@ To implement proper DOCX generation, consider using libraries like:
     } catch (error) {
       console.error('Download error:', error)
       throw error
-throw error
     }
   }
 }

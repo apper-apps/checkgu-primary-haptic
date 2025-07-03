@@ -1,11 +1,10 @@
-import './index.css'
-import React, { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "@/App";
+import React, { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import App from '@/App'
+import '@/index.css'
 
-// Ensure root element has proper dimensions before rendering
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById('root')
 if (rootElement) {
   // Add loaded class to prevent FOUC and ensure dimensions
   rootElement.classList.add('loaded');
