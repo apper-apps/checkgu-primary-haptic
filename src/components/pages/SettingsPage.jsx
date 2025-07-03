@@ -168,7 +168,12 @@ useEffect(() => {
 const saveSettings = async () => {
     setLoading(true)
     try {
-      await userSettingsService.create(settings)
+      // Ensure the settings object reflects the current language from context
+      const settingsToSave = {
+        ...settings,
+        preferredLanguage: currentLanguage
+      }
+      await userSettingsService.create(settingsToSave)
       toast.success('Settings saved successfully!')
     } catch (err) {
       toast.error('Failed to save settings')
@@ -178,14 +183,20 @@ const saveSettings = async () => {
     }
   }
 
-  const handleInputChange = (field, value) => {
+const handleInputChange = (field, value) => {
     if (field === 'preferredLanguage') {
       changeLanguage(value)
+      // Update local settings state to reflect the language change
+      setSettings(prev => ({
+        ...prev,
+        preferredLanguage: value
+      }))
+    } else {
+      setSettings(prev => ({
+        ...prev,
+        [field]: value
+      }))
     }
-    setSettings(prev => ({
-      ...prev,
-      [field]: value
-    }))
   }
 
 const handleToggle = (field) => {
