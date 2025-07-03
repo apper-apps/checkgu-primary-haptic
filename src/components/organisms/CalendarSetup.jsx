@@ -435,13 +435,13 @@ const CalendarSetup = () => {
                 <li><strong>Single mode:</strong> Click any date to select it</li>
                 <li><strong>Multiple mode:</strong> Click dates to add/remove from selection</li>
                 <li><strong>Range mode:</strong> Click start date, then end date to create a range</li>
-              </ul>
+</ul>
             </div>
 </div>
-          </div>
         </div>
       </Card>
     </div>
   )
+}
 
 export default CalendarSetup
