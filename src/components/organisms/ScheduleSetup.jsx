@@ -1,16 +1,20 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { toast } from 'react-toastify'
-import ApperIcon from '@/components/ApperIcon'
-import Card from '@/components/atoms/Card'
-import Button from '@/components/atoms/Button'
-import Input from '@/components/atoms/Input'
-import Loading from '@/components/ui/Loading'
-import Error from '@/components/ui/Error'
-import { weeklyScheduleService } from '@/services/api/weeklyScheduleService'
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { teachingScheduleService } from "@/services/api/teachingScheduleService";
+import { classService } from "@/services/api/classService";
+import { subjectService } from "@/services/api/subjectService";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
 
 const ScheduleSetup = () => {
   const [schedule, setSchedule] = useState([])
+  const [classes, setClasses] = useState([])
+  const [subjects, setSubjects] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [isEditing, setIsEditing] = useState(false)
@@ -18,8 +22,9 @@ const ScheduleSetup = () => {
     dayOfWeek: 'Monday',
     startTime: '',
     endTime: '',
-    className: '',
-    subject: ''
+    classId: '',
+    subjectId: '',
+    room: ''
   })
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -29,16 +34,22 @@ const ScheduleSetup = () => {
     '16:00', '16:30', '17:00', '17:30', '18:00'
   ]
 
-  const loadSchedule = async () => {
+const loadSchedule = async () => {
     setLoading(true)
     setError('')
     
     try {
       await new Promise(resolve => setTimeout(resolve, 300))
-      const data = await weeklyScheduleService.getAll()
-      setSchedule(data)
+      const [scheduleData, classesData, subjectsData] = await Promise.all([
+        teachingScheduleService.getAll(),
+        classService.getAll(),
+        subjectService.getAll()
+      ])
+      setSchedule(scheduleData)
+      setClasses(classesData)
+      setSubjects(subjectsData)
     } catch (err) {
-      setError('Failed to load schedule')
+      setError('Failed to load schedule data')
       console.error('Error loading schedule:', err)
     } finally {
       setLoading(false)
@@ -49,43 +60,45 @@ const ScheduleSetup = () => {
     loadSchedule()
   }, [])
 
-  const addSlot = async () => {
-    if (!newSlot.startTime || !newSlot.endTime || !newSlot.className || !newSlot.subject) {
-      toast.error('Please fill in all fields')
+const addSlot = async () => {
+    if (!newSlot.startTime || !newSlot.endTime || !newSlot.classId || !newSlot.subjectId) {
+      toast.error('Please fill in all required fields')
       return
     }
 
     try {
       const slotData = {
         ...newSlot,
-        slots: [`${newSlot.startTime} - ${newSlot.endTime}`],
+        classId: parseInt(newSlot.classId),
+        subjectId: parseInt(newSlot.subjectId),
         duration: calculateDuration(newSlot.startTime, newSlot.endTime)
       }
       
-      await weeklyScheduleService.create(slotData)
-      toast.success('Schedule slot added successfully')
+      await teachingScheduleService.create(slotData)
+      toast.success('Teaching schedule added successfully')
       setNewSlot({
         dayOfWeek: 'Monday',
         startTime: '',
         endTime: '',
-        className: '',
-        subject: ''
+        classId: '',
+        subjectId: '',
+        room: ''
       })
       loadSchedule()
     } catch (err) {
-      toast.error('Failed to add schedule slot')
+      toast.error('Failed to add teaching schedule')
       console.error('Error adding slot:', err)
     }
   }
 
-  const removeSlot = async (slotId) => {
-    if (window.confirm('Are you sure you want to remove this schedule slot?')) {
+const removeSlot = async (slotId) => {
+    if (window.confirm('Are you sure you want to remove this teaching schedule?')) {
       try {
-        await weeklyScheduleService.delete(slotId)
-        toast.success('Schedule slot removed successfully')
+        await teachingScheduleService.delete(slotId)
+        toast.success('Teaching schedule removed successfully')
         loadSchedule()
       } catch (err) {
-        toast.error('Failed to remove schedule slot')
+        toast.error('Failed to remove teaching schedule')
         console.error('Error removing slot:', err)
       }
     }
@@ -102,18 +115,18 @@ const ScheduleSetup = () => {
       .sort((a, b) => a.slots[0]?.localeCompare(b.slots[0]))
   }
 
-  const getSubjectColor = (subject) => {
-    const colors = {
-      'Mathematics': 'bg-blue-100 text-blue-800',
-      'Science': 'bg-green-100 text-green-800',
-      'English': 'bg-purple-100 text-purple-800',
-      'History': 'bg-yellow-100 text-yellow-800',
-      'Geography': 'bg-indigo-100 text-indigo-800',
-      'Art': 'bg-pink-100 text-pink-800',
-      'Music': 'bg-red-100 text-red-800',
-      'Physical Education': 'bg-orange-100 text-orange-800'
-    }
-    return colors[subject] || 'bg-gray-100 text-gray-800'
+const getClassName = (classId) => {
+    const cls = classes.find(c => c.Id === classId)
+    return cls ? cls.name : 'Unknown Class'
+  }
+
+  const getSubjectInfo = (subjectId) => {
+    const subject = subjects.find(s => s.Id === subjectId)
+    return subject ? subject : { name: 'Unknown Subject', color: 'bg-gray-100 text-gray-800' }
+  }
+
+  const formatTimeSlot = (startTime, endTime) => {
+    return `${startTime} - ${endTime}`
   }
 
   if (loading) {
@@ -138,9 +151,9 @@ const ScheduleSetup = () => {
       </div>
 
       {isEditing && (
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Schedule Slot</h3>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+<Card className="p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Teaching Schedule</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Day</label>
               <select
@@ -182,28 +195,49 @@ const ScheduleSetup = () => {
               </select>
             </div>
 
-            <Input
-              label="Class"
-              value={newSlot.className}
-              onChange={(e) => setNewSlot(prev => ({ ...prev, className: e.target.value }))}
-              placeholder="Grade 5A"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Class</label>
+              <select
+                value={newSlot.classId}
+                onChange={(e) => setNewSlot(prev => ({ ...prev, classId: e.target.value }))}
+                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+              >
+                <option value="">Select class</option>
+                {classes.map(cls => (
+                  <option key={cls.Id} value={cls.Id}>{cls.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+              <select
+                value={newSlot.subjectId}
+                onChange={(e) => setNewSlot(prev => ({ ...prev, subjectId: e.target.value }))}
+                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+              >
+                <option value="">Select subject</option>
+                {subjects.map(subject => (
+                  <option key={subject.Id} value={subject.Id}>{subject.name}</option>
+                ))}
+              </select>
+            </div>
 
             <Input
-              label="Subject"
-              value={newSlot.subject}
-              onChange={(e) => setNewSlot(prev => ({ ...prev, subject: e.target.value }))}
-              placeholder="Mathematics"
+              label="Room"
+              value={newSlot.room}
+              onChange={(e) => setNewSlot(prev => ({ ...prev, room: e.target.value }))}
+              placeholder="Room A1"
             />
           </div>
 
-          <div className="mt-4 flex justify-end">
+<div className="mt-4 flex justify-end">
             <Button
               variant="primary"
               onClick={addSlot}
               icon="Plus"
             >
-              Add Slot
+              Add Teaching Schedule
             </Button>
           </div>
         </Card>
@@ -219,39 +253,41 @@ const ScheduleSetup = () => {
               </span>
             </div>
 
-            <div className="space-y-2">
+<div className="space-y-2">
               {getScheduleForDay(day).map((slot, index) => (
                 <motion.div
                   key={slot.Id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="p-3 bg-gray-50 rounded-lg"
+                  className="p-3 bg-gray-50 rounded-lg flex items-start justify-between"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <ApperIcon name="Clock" size={14} className="text-gray-500" />
-                        <span className="text-sm font-medium text-gray-700">
-                          {slot.slots[0]}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-2 mb-1">
-                        <ApperIcon name="Users" size={14} className="text-gray-500" />
-                        <span className="text-sm text-gray-600">{slot.className}</span>
-                      </div>
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSubjectColor(slot.subject)}`}>
-                        {slot.subject}
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-1">
+                      <ApperIcon name="Clock" size={14} className="text-gray-500" />
+                      <span className="text-sm font-medium text-gray-700">
+                        {formatTimeSlot(slot.startTime, slot.endTime)}
                       </span>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      icon="X"
-                      onClick={() => removeSlot(slot.Id)}
-                      className="text-error-600 hover:text-error-700 hover:bg-error-50"
-                    />
+                    <div className="flex items-center space-x-2 mb-1">
+                      <ApperIcon name="Users" size={14} className="text-gray-500" />
+                      <span className="text-sm text-gray-600">{getClassName(slot.classId)}</span>
+                    </div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <ApperIcon name="MapPin" size={14} className="text-gray-500" />
+                      <span className="text-xs text-gray-500">{slot.room || 'No room assigned'}</span>
+                    </div>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSubjectInfo(slot.subjectId).color}`}>
+                      {getSubjectInfo(slot.subjectId).name}
+                    </span>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    icon="X"
+                    onClick={() => removeSlot(slot.Id)}
+                    className="text-error-600 hover:text-error-700 hover:bg-error-50"
+                  />
                 </motion.div>
               ))}
 

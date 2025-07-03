@@ -1,0 +1,72 @@
+[
+  {
+    "Id": 1,
+    "classId": 1,
+    "subjectId": 1,
+    "dayOfWeek": "Monday",
+    "startTime": "08:00",
+    "endTime": "08:45",
+    "duration": 45,
+    "room": "Room A1"
+  },
+  {
+    "Id": 2,
+    "classId": 1,
+    "subjectId": 3,
+    "dayOfWeek": "Monday",
+    "startTime": "08:45",
+    "endTime": "09:30",
+    "duration": 45,
+    "room": "Room A1"
+  },
+  {
+    "Id": 3,
+    "classId": 1,
+    "subjectId": 2,
+    "dayOfWeek": "Monday",
+    "startTime": "10:00",
+    "endTime": "10:45",
+    "duration": 45,
+    "room": "Science Lab"
+  },
+  {
+    "Id": 4,
+    "classId": 1,
+    "subjectId": 5,
+    "dayOfWeek": "Tuesday",
+    "startTime": "08:00",
+    "endTime": "08:45",
+    "duration": 45,
+    "room": "Room A1"
+  },
+  {
+    "Id": 5,
+    "classId": 1,
+    "subjectId": 6,
+    "dayOfWeek": "Tuesday",
+    "startTime": "08:45",
+    "endTime": "09:30",
+    "duration": 45,
+    "room": "Room A1"
+  },
+  {
+    "Id": 6,
+    "classId": 2,
+    "subjectId": 1,
+    "dayOfWeek": "Tuesday",
+    "startTime": "10:00",
+    "endTime": "10:45",
+    "duration": 45,
+    "room": "Room B1"
+  },
+  {
+    "Id": 7,
+    "classId": 1,
+    "subjectId": 9,
+    "dayOfWeek": "Wednesday",
+    "startTime": "10:00",
+    "endTime": "11:00",
+    "duration": 60,
+    "room": "Gymnasium"
+  }
+]

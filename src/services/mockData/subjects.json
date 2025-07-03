@@ -1,0 +1,72 @@
+[
+  {
+    "Id": 1,
+    "name": "Mathematics",
+    "description": "Primary Mathematics",
+    "color": "bg-blue-100 text-blue-800",
+    "category": "Core"
+  },
+  {
+    "Id": 2,
+    "name": "Science",
+    "description": "Primary Science",
+    "color": "bg-green-100 text-green-800",
+    "category": "Core"
+  },
+  {
+    "Id": 3,
+    "name": "English",
+    "description": "English Language",
+    "color": "bg-purple-100 text-purple-800",
+    "category": "Language"
+  },
+  {
+    "Id": 4,
+    "name": "Malay Language",
+    "description": "Bahasa Melayu",
+    "color": "bg-red-100 text-red-800",
+    "category": "Language"
+  },
+  {
+    "Id": 5,
+    "name": "History",
+    "description": "Malaysian History",
+    "color": "bg-yellow-100 text-yellow-800",
+    "category": "Social Studies"
+  },
+  {
+    "Id": 6,
+    "name": "Geography",
+    "description": "World Geography",
+    "color": "bg-indigo-100 text-indigo-800",
+    "category": "Social Studies"
+  },
+  {
+    "Id": 7,
+    "name": "Art",
+    "description": "Visual Arts",
+    "color": "bg-pink-100 text-pink-800",
+    "category": "Creative"
+  },
+  {
+    "Id": 8,
+    "name": "Music",
+    "description": "Music Education",
+    "color": "bg-orange-100 text-orange-800",
+    "category": "Creative"
+  },
+  {
+    "Id": 9,
+    "name": "Physical Education",
+    "description": "Physical Education & Health",
+    "color": "bg-cyan-100 text-cyan-800",
+    "category": "Physical"
+  },
+  {
+    "Id": 10,
+    "name": "Computer Science",
+    "description": "Information Technology",
+    "color": "bg-gray-100 text-gray-800",
+    "category": "Technology"
+  }
+]

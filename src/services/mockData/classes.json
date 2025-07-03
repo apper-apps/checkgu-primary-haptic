@@ -1,0 +1,37 @@
+[
+  {
+    "Id": 1,
+    "name": "Grade 5A",
+    "description": "Primary 5 Class A",
+    "studentCount": 28,
+    "academic_year": "2024"
+  },
+  {
+    "Id": 2,
+    "name": "Grade 5B",
+    "description": "Primary 5 Class B",
+    "studentCount": 26,
+    "academic_year": "2024"
+  },
+  {
+    "Id": 3,
+    "name": "Grade 6A",
+    "description": "Primary 6 Class A",
+    "studentCount": 30,
+    "academic_year": "2024"
+  },
+  {
+    "Id": 4,
+    "name": "Grade 6B",
+    "description": "Primary 6 Class B",
+    "studentCount": 25,
+    "academic_year": "2024"
+  },
+  {
+    "Id": 5,
+    "name": "Grade 4A",
+    "description": "Primary 4 Class A",
+    "studentCount": 24,
+    "academic_year": "2024"
+  }
+]
