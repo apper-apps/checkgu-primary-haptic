@@ -1,0 +1,64 @@
+[
+  {
+    "Id": 1,
+    "academicYear": "2024-2025",
+    "startDate": "2024-01-08",
+    "endDate": "2024-12-20",
+    "holidays": [
+      {
+        "name": "Chinese New Year",
+        "date": "2024-02-10"
+      },
+      {
+        "name": "Good Friday",
+        "date": "2024-03-29"
+      },
+      {
+        "name": "Labour Day",
+        "date": "2024-05-01"
+      },
+      {
+        "name": "Vesak Day",
+        "date": "2024-05-22"
+      },
+      {
+        "name": "Independence Day",
+        "date": "2024-08-31"
+      },
+      {
+        "name": "Malaysia Day",
+        "date": "2024-09-16"
+      },
+      {
+        "name": "Deepavali",
+        "date": "2024-10-31"
+      },
+      {
+        "name": "Christmas Day",
+        "date": "2024-12-25"
+      }
+    ],
+    "breaks": [
+      {
+        "name": "March School Holiday",
+        "startDate": "2024-03-23",
+        "endDate": "2024-03-31"
+      },
+      {
+        "name": "Mid-Year Break",
+        "startDate": "2024-05-25",
+        "endDate": "2024-06-09"
+      },
+      {
+        "name": "September Break",
+        "startDate": "2024-09-07",
+        "endDate": "2024-09-15"
+      },
+      {
+        "name": "Year-End Holiday",
+        "startDate": "2024-11-16",
+        "endDate": "2024-12-31"
+      }
+    ]
+  }
+]

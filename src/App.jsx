@@ -1,0 +1,39 @@
+import { Routes, Route } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import Layout from '@/components/organisms/Layout'
+import UploadPage from '@/components/pages/UploadPage'
+import CalendarPage from '@/components/pages/CalendarPage'
+import SchedulePage from '@/components/pages/SchedulePage'
+import RecentFilesPage from '@/components/pages/RecentFilesPage'
+import SettingsPage from '@/components/pages/SettingsPage'
+
+function App() {
+  return (
+    <>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<UploadPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
+          <Route path="/recent" element={<RecentFilesPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Routes>
+      </Layout>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ zIndex: 9999 }}
+      />
+    </>
+  )
+}
+
+export default App

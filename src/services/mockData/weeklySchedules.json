@@ -1,0 +1,122 @@
+[
+  {
+    "Id": 1,
+    "dayOfWeek": "Monday",
+    "slots": ["08:00 - 08:45"],
+    "className": "Grade 5A",
+    "subject": "Mathematics",
+    "duration": 45
+  },
+  {
+    "Id": 2,
+    "dayOfWeek": "Monday",
+    "slots": ["08:45 - 09:30"],
+    "className": "Grade 5A",
+    "subject": "English",
+    "duration": 45
+  },
+  {
+    "Id": 3,
+    "dayOfWeek": "Monday",
+    "slots": ["10:00 - 10:45"],
+    "className": "Grade 5A",
+    "subject": "Science",
+    "duration": 45
+  },
+  {
+    "Id": 4,
+    "dayOfWeek": "Tuesday",
+    "slots": ["08:00 - 08:45"],
+    "className": "Grade 5A",
+    "subject": "History",
+    "duration": 45
+  },
+  {
+    "Id": 5,
+    "dayOfWeek": "Tuesday",
+    "slots": ["08:45 - 09:30"],
+    "className": "Grade 5A",
+    "subject": "Geography",
+    "duration": 45
+  },
+  {
+    "Id": 6,
+    "dayOfWeek": "Tuesday",
+    "slots": ["10:00 - 10:45"],
+    "className": "Grade 5A",
+    "subject": "Art",
+    "duration": 45
+  },
+  {
+    "Id": 7,
+    "dayOfWeek": "Wednesday",
+    "slots": ["08:00 - 08:45"],
+    "className": "Grade 5A",
+    "subject": "Mathematics",
+    "duration": 45
+  },
+  {
+    "Id": 8,
+    "dayOfWeek": "Wednesday",
+    "slots": ["08:45 - 09:30"],
+    "className": "Grade 5A",
+    "subject": "English",
+    "duration": 45
+  },
+  {
+    "Id": 9,
+    "dayOfWeek": "Wednesday",
+    "slots": ["10:00 - 11:00"],
+    "className": "Grade 5A",
+    "subject": "Physical Education",
+    "duration": 60
+  },
+  {
+    "Id": 10,
+    "dayOfWeek": "Thursday",
+    "slots": ["08:00 - 08:45"],
+    "className": "Grade 5A",
+    "subject": "Science",
+    "duration": 45
+  },
+  {
+    "Id": 11,
+    "dayOfWeek": "Thursday",
+    "slots": ["08:45 - 09:30"],
+    "className": "Grade 5A",
+    "subject": "Malay Language",
+    "duration": 45
+  },
+  {
+    "Id": 12,
+    "dayOfWeek": "Thursday",
+    "slots": ["10:00 - 10:45"],
+    "className": "Grade 5A",
+    "subject": "Music",
+    "duration": 45
+  },
+  {
+    "Id": 13,
+    "dayOfWeek": "Friday",
+    "slots": ["08:00 - 08:45"],
+    "className": "Grade 5A",
+    "subject": "Mathematics",
+    "duration": 45
+  },
+  {
+    "Id": 14,
+    "dayOfWeek": "Friday",
+    "slots": ["08:45 - 09:30"],
+    "className": "Grade 5A",
+    "subject": "English",
+    "duration": 45
+  },
+  {
+    "Id": 15,
+    "dayOfWeek": "Friday",
+    "slots": ["10:00 - 10:45"],
+    "className": "Grade 5A",
+    "subject": "Computer Science",
+    "duration": 45
+  }
+]

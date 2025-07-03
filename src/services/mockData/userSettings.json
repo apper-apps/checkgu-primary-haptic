@@ -1,0 +1,13 @@
+[
+  {
+    "Id": 1,
+    "preferredLanguage": "English",
+    "schoolId": "SMK001",
+    "defaultTemplate": "/templates/default-lesson-plan.docx",
+    "googleDriveEnabled": false,
+    "autoProcess": true,
+    "emailNotifications": true,
+    "darkMode": false,
+    "timezone": "Asia/Kuala_Lumpur"
+  }
+]
