@@ -6,6 +6,7 @@ import UploadPage from '@/components/pages/UploadPage'
 import CalendarPage from '@/components/pages/CalendarPage'
 import SchedulePage from '@/components/pages/SchedulePage'
 import RecentFilesPage from '@/components/pages/RecentFilesPage'
+import LessonPlansPage from '@/components/pages/LessonPlansPage'
 import SettingsPage from '@/components/pages/SettingsPage'
 import TemplatesPage from '@/components/pages/TemplatesPage'
 function App() {
@@ -17,7 +18,8 @@ function App() {
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/schedule" element={<SchedulePage />} />
-          <Route path="/recent" element={<RecentFilesPage />} />
+<Route path="/recent" element={<RecentFilesPage />} />
+          <Route path="/lesson-plans" element={<LessonPlansPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/templates" element={<TemplatesPage />} />
         </Routes>

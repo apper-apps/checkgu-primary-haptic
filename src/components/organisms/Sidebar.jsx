@@ -7,11 +7,11 @@ const navigationItems = [
     { to: '/', icon: 'Home', label: 'Home' },
     { to: '/upload', icon: 'Upload', label: 'Upload' },
     { to: '/calendar', icon: 'Calendar', label: 'Calendar' },
-    { to: '/schedule', icon: 'Clock', label: 'Schedule' },
+{ to: '/schedule', icon: 'Clock', label: 'Schedule' },
     { to: '/recent', icon: 'FileText', label: 'Recent Files' },
+    { to: '/lesson-plans', icon: 'BookOpen', label: 'Lesson Plans' },
     { to: '/settings', icon: 'Settings', label: 'Settings' }
   ]
-
 return (
     <>
 {/* Desktop Sidebar */}
