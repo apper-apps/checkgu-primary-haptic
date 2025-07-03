@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import FileUploadZone from '@/components/molecules/FileUploadZone'
 import ProcessingStatus from '@/components/molecules/ProcessingStatus'
 import FileList from '@/components/organisms/FileList'
@@ -14,6 +15,40 @@ const UploadPage = () => {
   const [processingStatus, setProcessingStatus] = useState('idle')
   const [progress, setProgress] = useState(0)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [placeholderFields, setPlaceholderFields] = useState([
+    {
+      id: 'date',
+      key: '{{date}}',
+      description: 'Current date or scheduled date',
+      icon: 'Calendar',
+      iconColor: 'text-primary-600',
+      bgColor: 'bg-primary-100'
+    },
+    {
+      id: 'title',
+      key: '{{title}}',
+      description: 'Lesson title or subject name',
+      icon: 'Type',
+      iconColor: 'text-secondary-600',
+      bgColor: 'bg-secondary-100'
+    },
+    {
+      id: 'class',
+      key: '{{class}}',
+      description: 'Class name or grade level',
+      icon: 'Users',
+      iconColor: 'text-success-600',
+      bgColor: 'bg-success-100'
+    },
+    {
+      id: 'duration',
+      key: '{{duration}}',
+      description: 'Lesson duration from schedule',
+      icon: 'Clock',
+      iconColor: 'text-warning-600',
+      bgColor: 'bg-warning-100'
+    }
+  ])
 
   const handleFileSelect = async (file) => {
     setCurrentFile(file)
@@ -99,6 +134,20 @@ const UploadPage = () => {
       toast.error('Failed to save processed file')
       console.error('Save error:', err)
     }
+}
+  }
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) {
+      return
+    }
+
+    const items = Array.from(placeholderFields)
+    const [reorderedItem] = items.splice(result.source.index, 1)
+    items.splice(result.destination.index, 0, reorderedItem)
+
+    setPlaceholderFields(items)
+    toast.success('Field order updated')
   }
 
   const cancelProcessing = () => {
@@ -106,7 +155,6 @@ const UploadPage = () => {
     setProcessingStatus('idle')
     setProgress(0)
     toast.info('Processing cancelled')
-  }
 
   return (
     <div className="space-y-8">
@@ -140,46 +188,78 @@ const UploadPage = () => {
             )}
           </Card>
 
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Supported Placeholders</h2>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                  <ApperIcon name="Calendar" size={16} className="text-primary-600" />
-                </div>
-                <div>
-                  <code className="text-sm bg-gray-100 px-2 py-1 rounded">{'{{date}}'}</code>
-                  <p className="text-sm text-gray-600">Current date or scheduled date</p>
-                </div>
+<Card className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Template Fields</h2>
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <ApperIcon name="Move" size={14} />
+                <span>Drag to reorder</span>
               </div>
-              
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-secondary-100 rounded-full flex items-center justify-center">
-                  <ApperIcon name="Type" size={16} className="text-secondary-600" />
-                </div>
-                <div>
-                  <code className="text-sm bg-gray-100 px-2 py-1 rounded">{'{{title}}'}</code>
-                  <p className="text-sm text-gray-600">Lesson title or subject name</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-success-100 rounded-full flex items-center justify-center">
-                  <ApperIcon name="Users" size={16} className="text-success-600" />
-                </div>
-                <div>
-                  <code className="text-sm bg-gray-100 px-2 py-1 rounded">{'{{class}}'}</code>
-                  <p className="text-sm text-gray-600">Class name or grade level</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-warning-100 rounded-full flex items-center justify-center">
-                  <ApperIcon name="Clock" size={16} className="text-warning-600" />
-                </div>
-                <div>
-                  <code className="text-sm bg-gray-100 px-2 py-1 rounded">{'{{duration}}'}</code>
-                  <p className="text-sm text-gray-600">Lesson duration from schedule</p>
+            </div>
+            
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="placeholder-fields">
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className={`space-y-3 transition-colors duration-200 ${
+                      snapshot.isDraggingOver ? 'bg-gray-50 rounded-lg p-2' : ''
+                    }`}
+                  >
+                    {placeholderFields.map((field, index) => (
+                      <Draggable key={field.id} draggableId={field.id} index={index}>
+                        {(provided, snapshot) => (
+                          <motion.div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className={`
+                              flex items-center space-x-3 p-3 rounded-lg border transition-all duration-200
+                              ${snapshot.isDragging 
+                                ? 'bg-white shadow-lg border-primary-300 scale-105' 
+                                : 'bg-gray-50 border-gray-200 hover:bg-white hover:shadow-sm'
+                              }
+                            `}
+                            layout
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                          >
+                            <div
+                              {...provided.dragHandleProps}
+                              className="drag-handle cursor-grab active:cursor-grabbing p-1 hover:bg-gray-200 rounded transition-colors"
+                            >
+                              <ApperIcon name="GripVertical" size={16} className="text-gray-400" />
+                            </div>
+                            
+                            <div className={`w-8 h-8 ${field.bgColor} rounded-full flex items-center justify-center flex-shrink-0`}>
+                              <ApperIcon name={field.icon} size={16} className={field.iconColor} />
+                            </div>
+                            
+                            <div className="flex-1 min-w-0">
+                              <code className="text-sm bg-white px-2 py-1 rounded border font-mono">{field.key}</code>
+                              <p className="text-sm text-gray-600 mt-1">{field.description}</p>
+                            </div>
+                            
+                            <div className="flex items-center space-x-1 text-gray-400">
+                              <span className="text-xs font-medium">{index + 1}</span>
+                            </div>
+                          </motion.div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+            
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex items-start space-x-2">
+                <ApperIcon name="Info" size={16} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-blue-700">
+                  <p className="font-medium">Field Order</p>
+                  <p>Drag fields to set the processing priority in your lesson plan template.</p>
                 </div>
               </div>
             </div>
