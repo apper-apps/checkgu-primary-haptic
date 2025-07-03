@@ -6,17 +6,18 @@ import CalendarPage from '@/components/pages/CalendarPage'
 import SchedulePage from '@/components/pages/SchedulePage'
 import RecentFilesPage from '@/components/pages/RecentFilesPage'
 import SettingsPage from '@/components/pages/SettingsPage'
-
+import TemplatesPage from '@/components/pages/TemplatesPage'
 function App() {
   return (
     <>
       <Layout>
-        <Routes>
+<Routes>
           <Route path="/" element={<UploadPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/recent" element={<RecentFilesPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/templates" element={<TemplatesPage />} />
         </Routes>
       </Layout>
       <ToastContainer

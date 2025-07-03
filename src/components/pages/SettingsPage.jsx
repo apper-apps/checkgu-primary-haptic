@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 import Card from '@/components/atoms/Card'
 import Button from '@/components/atoms/Button'
 import Input from '@/components/atoms/Input'
@@ -8,8 +9,8 @@ import ApperIcon from '@/components/ApperIcon'
 import GoogleDriveModal from '@/components/organisms/GoogleDriveModal'
 import { userSettingsService } from '@/services/api/userSettingsService'
 import { googleDriveService } from '@/services/api/googleDriveService'
-
 const SettingsPage = () => {
+  const navigate = useNavigate()
   const [settings, setSettings] = useState({
     preferredLanguage: 'English',
     schoolId: '',
@@ -141,13 +142,24 @@ const handleToggle = (field) => {
               icon="School"
             />
 
-            <Input
+<Input
               label="Default Template Path"
               value={settings.defaultTemplate}
               onChange={(e) => handleInputChange('defaultTemplate', e.target.value)}
               placeholder="Path to default template"
               icon="FileText"
             />
+            
+            <div className="pt-4 border-t border-gray-200">
+              <Button
+                variant="outline"
+                icon="FileText"
+                onClick={() => navigate('/templates')}
+                className="w-full"
+              >
+                Manage Templates
+              </Button>
+            </div>
           </div>
         </Card>
 

@@ -1,0 +1,29 @@
+[
+  {
+    "Id": 1,
+    "name": "Primary Math Lesson",
+    "description": "Standard template for primary school mathematics lessons with objectives, activities, and assessment",
+    "category": "lesson-plan",
+    "content": "# Math Lesson Plan Template\n\n## Learning Objectives\n- Students will understand [concept]\n- Students will be able to [skill]\n\n## Materials Needed\n- Whiteboard and markers\n- Worksheets\n- Manipulatives\n\n## Lesson Structure\n\n### Introduction (10 minutes)\n- Review previous lesson\n- Introduce new concept\n\n### Main Activity (30 minutes)\n- Guided practice\n- Independent work\n\n### Conclusion (10 minutes)\n- Summarize key points\n- Preview next lesson\n\n## Assessment\n- Formative assessment during activities\n- Exit ticket\n\n## Homework\n- Practice worksheets",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Science Experiment Report",
+    "description": "Template for documenting science experiments with hypothesis, methodology, and conclusions",
+    "category": "report",
+    "content": "# Science Experiment Report\n\n## Experiment Title\n[Title of the experiment]\n\n## Hypothesis\nI predict that [prediction] because [reasoning].\n\n## Materials\n- [List all materials needed]\n- [Include quantities where relevant]\n\n## Procedure\n1. [Step-by-step instructions]\n2. [Include safety considerations]\n3. [Be specific and clear]\n\n## Observations\n### Data Collection\n[Tables, charts, or written observations]\n\n### Results\n[What happened during the experiment]\n\n## Analysis\n[Explanation of results]\n\n## Conclusion\n[Was hypothesis correct? What was learned?]\n\n## Further Questions\n[What would you investigate next?]",
+    "createdAt": "2024-01-20T14:30:00Z",
+    "updatedAt": "2024-01-20T14:30:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Reading Comprehension Worksheet",
+    "description": "Interactive worksheet template for developing reading comprehension skills with various question types",
+    "category": "worksheet",
+    "content": "# Reading Comprehension Worksheet\n\n## Student Name: ________________  Date: ________________\n\n## Reading Passage\n[Insert age-appropriate reading passage here]\n\n## Comprehension Questions\n\n### Multiple Choice\n1. What is the main idea of the passage?\n   a) [Option A]\n   b) [Option B]\n   c) [Option C]\n   d) [Option D]\n\n### Short Answer\n2. Who are the main characters in the story?\n   ________________________________\n\n3. When does the story take place?\n   ________________________________\n\n### Extended Response\n4. Explain how the main character solved their problem. Use evidence from the text to support your answer.\n   ________________________________\n   ________________________________\n   ________________________________\n\n### Critical Thinking\n5. Do you agree with the character's decision? Why or why not?\n   ________________________________\n   ________________________________\n\n## Vocabulary\nDefine the following words from the passage:\n- [Word 1]: ________________________________\n- [Word 2]: ________________________________\n- [Word 3]: ________________________________",
+    "createdAt": "2024-02-01T09:15:00Z",
+    "updatedAt": "2024-02-01T09:15:00Z"
+  }
+]
