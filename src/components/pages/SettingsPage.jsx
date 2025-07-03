@@ -8,12 +8,14 @@ import Input from '@/components/atoms/Input'
 import ApperIcon from '@/components/ApperIcon'
 import GoogleDriveModal from '@/components/organisms/GoogleDriveModal'
 import ScheduleSetup from '@/components/organisms/ScheduleSetup'
+import { useI18n } from '@/contexts/I18nContext'
 import { userSettingsService } from '@/services/api/userSettingsService'
 import { googleDriveService } from '@/services/api/googleDriveService'
 import { classService } from '@/services/api/classService'
 import { subjectService } from '@/services/api/subjectService'
 const SettingsPage = () => {
   const navigate = useNavigate()
+  const { currentLanguage, changeLanguage, getLanguageOptions } = useI18n()
   const [settings, setSettings] = useState({
     preferredLanguage: 'English',
     schoolId: '',
@@ -163,7 +165,7 @@ useEffect(() => {
     }
   }
 
-  const saveSettings = async () => {
+const saveSettings = async () => {
     setLoading(true)
     try {
       await userSettingsService.create(settings)
@@ -177,6 +179,9 @@ useEffect(() => {
   }
 
   const handleInputChange = (field, value) => {
+    if (field === 'preferredLanguage') {
+      changeLanguage(value)
+    }
     setSettings(prev => ({
       ...prev,
       [field]: value
@@ -241,16 +246,17 @@ const tabs = [
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Language</label>
+<label className="block text-sm font-medium text-gray-700 mb-2">Preferred Language</label>
                 <select
                   value={settings.preferredLanguage}
                   onChange={(e) => handleInputChange('preferredLanguage', e.target.value)}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-primary-500"
                 >
-                  <option value="English">English</option>
-                  <option value="Malay">Bahasa Melayu</option>
-                  <option value="Chinese">中文</option>
-                  <option value="Tamil">தமிழ்</option>
+                  {getLanguageOptions().map(language => (
+                    <option key={language.code} value={language.code}>
+                      {language.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 

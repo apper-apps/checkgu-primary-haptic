@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
+import { I18nProvider } from '@/contexts/I18nContext'
 import Layout from '@/components/organisms/Layout'
 import HomePage from '@/components/pages/HomePage'
 import UploadPage from '@/components/pages/UploadPage'
@@ -10,20 +11,22 @@ import LessonPlansPage from '@/components/pages/LessonPlansPage'
 import SettingsPage from '@/components/pages/SettingsPage'
 import TemplatesPage from '@/components/pages/TemplatesPage'
 function App() {
-  return (
+return (
     <>
-      <Layout>
-<Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/upload" element={<UploadPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/schedule" element={<SchedulePage />} />
-<Route path="/recent" element={<RecentFilesPage />} />
-          <Route path="/lesson-plans" element={<LessonPlansPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/templates" element={<TemplatesPage />} />
-        </Routes>
-      </Layout>
+      <I18nProvider>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/upload" element={<UploadPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/schedule" element={<SchedulePage />} />
+            <Route path="/recent" element={<RecentFilesPage />} />
+            <Route path="/lesson-plans" element={<LessonPlansPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/templates" element={<TemplatesPage />} />
+          </Routes>
+        </Layout>
+      </I18nProvider>
       <ToastContainer
         position="top-right"
         autoClose={3000}
