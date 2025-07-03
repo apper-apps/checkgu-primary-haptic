@@ -5,6 +5,9 @@
     "uploadDate": "2024-01-15T10:30:00Z",
     "status": "completed",
     "processedUrl": "/downloads/processed-mathematics-grade5-template.docx",
+    "subject": "Mathematics",
+    "grade": "Grade 5",
+    "topics": ["Fractions", "Decimals", "Problem Solving"],
     "placeholders": {
       "{{title}}": "Introduction to Fractions",
       "{{date}}": "2024-01-15",
@@ -19,6 +22,9 @@
     "uploadDate": "2024-01-14T14:20:00Z",
     "status": "completed",
     "processedUrl": "/downloads/processed-science-experiment-template.docx",
+    "subject": "Science",
+    "grade": "Grade 4",
+    "topics": ["Water Cycle", "States of Matter", "Scientific Method"],
     "placeholders": {
       "{{title}}": "Water Cycle Experiment",
       "{{date}}": "2024-01-14",
@@ -33,6 +39,9 @@
     "uploadDate": "2024-01-13T09:15:00Z",
     "status": "processing",
     "processedUrl": null,
+    "subject": "English Literature",
+    "grade": "Grade 6",
+    "topics": ["Poetry", "Literary Analysis", "Creative Writing"],
     "placeholders": {
       "{{title}}": "Poetry Analysis",
       "{{date}}": "2024-01-13",
@@ -46,6 +55,9 @@
     "uploadDate": "2024-01-12T16:45:00Z",
     "status": "error",
     "processedUrl": null,
+    "subject": "History",
+    "grade": "Grade 8",
+    "topics": ["World War II", "Historical Events", "Timeline Analysis"],
     "placeholders": {
       "{{title}}": "World War II Overview",
       "{{date}}": "2024-01-12",
@@ -59,6 +71,9 @@
     "uploadDate": "2024-01-11T11:00:00Z",
     "status": "completed",
     "processedUrl": "/downloads/processed-geography-climate-template.docx",
+    "subject": "Geography",
+    "grade": "Grade 7",
+    "topics": ["Climate Change", "Environmental Science", "Data Analysis"],
     "placeholders": {
       "{{title}}": "Climate Change Impact",
       "{{date}}": "2024-01-11",

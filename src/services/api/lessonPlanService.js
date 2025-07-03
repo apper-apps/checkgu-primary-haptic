@@ -54,7 +54,7 @@ async create(item) {
 throw new Error('Item not found')
   }
 
-  async downloadFile(id) {
+async downloadFile(id) {
     await this.delay()
     const item = this.data.find(item => item.Id === parseInt(id))
     if (!item) {
@@ -65,12 +65,18 @@ throw new Error('Item not found')
       throw new Error('File is not ready for download')
     }
 
+    // Safely extract properties with fallbacks
+    const fileName = item.fileName || 'Unknown Document'
+    const subject = item.subject || 'General'
+    const grade = item.grade || 'Not specified'
+    const topics = Array.isArray(item.topics) ? item.topics.join(', ') : 'No topics specified'
+
     // Create a sample .docx file content (in real implementation, this would come from actual file storage)
     const sampleContent = `
-      Document: ${item.fileName}
-      Subject: ${item.subject}
-      Grade: ${item.grade}
-      Topics: ${item.topics.join(', ')}
+      Document: ${fileName}
+      Subject: ${subject}
+      Grade: ${grade}
+      Topics: ${topics}
       
       Generated on: ${new Date().toLocaleDateString()}
       
