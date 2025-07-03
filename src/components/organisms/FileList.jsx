@@ -70,13 +70,18 @@ const handleDownload = async (file) => {
       // Get file content from service
       const fileBlob = await lessonPlanService.downloadFile(file.Id)
       
+      // Validate that we received a proper Blob
+      if (!fileBlob || !(fileBlob instanceof Blob)) {
+        throw new Error('Invalid file data received from service')
+      }
+      
       // Create download URL
       const downloadUrl = window.URL.createObjectURL(fileBlob)
       
       // Create temporary anchor element for download
       const link = document.createElement('a')
       link.href = downloadUrl
-      link.download = file.fileName
+      link.download = file.fileName || 'download'
       link.style.display = 'none'
       
       // Trigger download
@@ -90,7 +95,13 @@ const handleDownload = async (file) => {
       toast.success(`Downloaded ${file.fileName}`)
     } catch (error) {
       console.error('Download error:', error)
-      toast.error(`Failed to download ${file.fileName}`)
+      if (error.message.includes('createObjectURL')) {
+        toast.error('Failed to create download link - invalid file format')
+      } else if (error.message.includes('Invalid file data')) {
+        toast.error('File service returned invalid data')
+      } else {
+        toast.error(`Failed to download ${file.fileName}`)
+      }
     }
   }
 

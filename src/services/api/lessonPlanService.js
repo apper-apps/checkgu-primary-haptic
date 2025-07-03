@@ -90,23 +90,13 @@ To implement proper DOCX generation, consider using libraries like:
 - officegen for generating Office documents
 - mammoth.js for DOCX processing`
       
+      // Return blob for FileList component to handle download
       // Use application/octet-stream for safe binary downloads
-      // This prevents Word from trying to open corrupted content
       const blob = new Blob([placeholderContent], {
         type: 'application/octet-stream'
       })
       
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      // Change extension to .txt to avoid confusion until proper DOCX is implemented
-      a.download = item.fileName.replace('.docx', '_placeholder.txt')
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-      
-      return { success: true, message: 'File downloaded successfully' }
+      return blob
     } catch (error) {
       console.error('Download error:', error)
       throw error
