@@ -3,8 +3,9 @@ import ApperIcon from '@/components/ApperIcon'
 import NavigationItem from '@/components/molecules/NavigationItem'
 
 const Sidebar = ({ isOpen, onClose }) => {
-  const navigationItems = [
-    { to: '/', icon: 'Upload', label: 'Upload' },
+const navigationItems = [
+    { to: '/', icon: 'Home', label: 'Home' },
+    { to: '/upload', icon: 'Upload', label: 'Upload' },
     { to: '/calendar', icon: 'Calendar', label: 'Calendar' },
     { to: '/schedule', icon: 'Clock', label: 'Schedule' },
     { to: '/recent', icon: 'FileText', label: 'Recent Files' },

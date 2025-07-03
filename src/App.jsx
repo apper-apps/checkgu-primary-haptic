@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import Layout from '@/components/organisms/Layout'
+import HomePage from '@/components/pages/HomePage'
 import UploadPage from '@/components/pages/UploadPage'
 import CalendarPage from '@/components/pages/CalendarPage'
 import SchedulePage from '@/components/pages/SchedulePage'
@@ -12,7 +13,8 @@ function App() {
     <>
       <Layout>
 <Routes>
-          <Route path="/" element={<UploadPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/upload" element={<UploadPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/recent" element={<RecentFilesPage />} />
