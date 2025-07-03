@@ -437,9 +437,11 @@ const CalendarSetup = () => {
                 <li><strong>Range mode:</strong> Click start date, then end date to create a range</li>
               </ul>
             </div>
+</div>
           </div>
         </div>
       </Card>
     </div>
   )
-}
+
+export default CalendarSetup
