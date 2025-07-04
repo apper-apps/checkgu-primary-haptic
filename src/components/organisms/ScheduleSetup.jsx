@@ -110,9 +110,9 @@ const removeSlot = async (slotId) => {
     return (end - start) / 60000 // duration in minutes
   }
 
-  const getScheduleForDay = (day) => {
+const getScheduleForDay = (day) => {
     return schedule.filter(slot => slot.dayOfWeek === day)
-      .sort((a, b) => a.slots[0]?.localeCompare(b.slots[0]))
+      .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''))
   }
 
 const getClassName = (classId) => {
