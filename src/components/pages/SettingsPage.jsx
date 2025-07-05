@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
-import Card from '@/components/atoms/Card'
-import Button from '@/components/atoms/Button'
-import Input from '@/components/atoms/Input'
-import ApperIcon from '@/components/ApperIcon'
-import GoogleDriveModal from '@/components/organisms/GoogleDriveModal'
-import ScheduleSetup from '@/components/organisms/ScheduleSetup'
-import { useI18n } from '@/contexts/I18nContext'
-import { userSettingsService } from '@/services/api/userSettingsService'
-import { googleDriveService } from '@/services/api/googleDriveService'
-import { classService } from '@/services/api/classService'
-import { subjectService } from '@/services/api/subjectService'
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import ApperIcon from "@/components/ApperIcon";
+import GoogleDriveModal from "@/components/organisms/GoogleDriveModal";
+import ScheduleSetup from "@/components/organisms/ScheduleSetup";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import { userSettingsService } from "@/services/api/userSettingsService";
+import { googleDriveService } from "@/services/api/googleDriveService";
+import { subjectService } from "@/services/api/subjectService";
+import { classService } from "@/services/api/classService";
+import { useI18n } from "@/contexts/I18nContext";
 const SettingsPage = () => {
   const navigate = useNavigate()
   const { currentLanguage, changeLanguage, getLanguageOptions } = useI18n()
@@ -579,16 +579,46 @@ const tabs = [
                   )}
                 </div>
               </Card>
+</Card>
             </div>
+          </div>
+            {/* Level Overview Summary */}
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+                <ApperIcon name="Layers" size={20} />
+                <span>Level Overview</span>
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {Object.entries(classes.reduce((acc, cls) => {
+                  const level = cls.level || 'Unassigned'
+                  if (!acc[level]) acc[level] = []
+                  acc[level].push(cls)
+                  return acc
+                }, {})).map(([levelName, levelClasses]) => (
+                  <div key={levelName} className="bg-gray-50 rounded-lg p-4">
+                    <h3 className="font-medium text-gray-900 mb-2">{levelName}</h3>
+                    <div className="space-y-1 text-sm text-gray-600">
+                      <div className="flex items-center space-x-2">
+                        <ApperIcon name="Users" size={12} />
+                        <span>{levelClasses.length} classes</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <ApperIcon name="UserCheck" size={12} />
+                        <span>{levelClasses.reduce((sum, cls) => sum + (cls.studentCount || 0), 0)} students</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
 
             <Card className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                 <ApperIcon name="Calendar" size={20} />
-                <span>Teaching Schedule</span>
+                <span>Teaching Schedule & Level Management</span>
               </h2>
               <ScheduleSetup />
             </Card>
-          </div>
         )
       
       default:

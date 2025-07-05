@@ -61,9 +61,17 @@ class TeachingScheduleService {
     return this.data.filter(item => item.subjectId === parseInt(subjectId))
   }
 
-  async getByDay(dayOfWeek) {
+async getByDay(dayOfWeek) {
     await this.delay()
     return this.data.filter(item => item.dayOfWeek === dayOfWeek)
+  }
+
+  async getByLevel(level, classesData) {
+    await this.delay()
+    const levelClassIds = classesData
+      .filter(cls => cls.level === level)
+      .map(cls => cls.Id)
+    return this.data.filter(item => levelClassIds.includes(item.classId))
   }
 }
 

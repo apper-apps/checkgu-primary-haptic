@@ -20,15 +20,21 @@ class ClassService {
     return item ? { ...item } : null
   }
 
-  async create(item) {
+async create(item) {
     await this.delay()
     const newId = Math.max(...this.data.map(item => item.Id), 0) + 1
     const newItem = {
       ...item,
-      Id: newId
+      Id: newId,
+      level: item.level || 'Unassigned'
     }
     this.data.push(newItem)
     return { ...newItem }
+  }
+
+  async getByLevel(level) {
+    await this.delay()
+    return this.data.filter(item => item.level === level)
   }
 
   async update(id, updates) {

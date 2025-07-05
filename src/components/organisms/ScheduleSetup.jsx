@@ -15,9 +15,12 @@ const ScheduleSetup = () => {
   const [schedule, setSchedule] = useState([])
   const [classes, setClasses] = useState([])
   const [subjects, setSubjects] = useState([])
+  const [levels, setLevels] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [isEditing, setIsEditing] = useState(false)
+  const [showLevelForm, setShowLevelForm] = useState(false)
+  const [expandedLevels, setExpandedLevels] = useState({})
   const [newSlot, setNewSlot] = useState({
     dayOfWeek: 'Monday',
     startTime: '',
@@ -25,6 +28,12 @@ const ScheduleSetup = () => {
     classId: '',
     subjectId: '',
     room: ''
+  })
+  const [newLevel, setNewLevel] = useState({
+    name: '',
+    description: '',
+    classCount: 1,
+    assignedSubjects: []
   })
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -34,6 +43,87 @@ const ScheduleSetup = () => {
     '16:00', '16:30', '17:00', '17:30', '18:00'
   ]
 
+  const groupClassesByLevel = () => {
+    const grouped = {}
+    classes.forEach(cls => {
+      const level = cls.level || 'Unassigned'
+      if (!grouped[level]) {
+        grouped[level] = []
+      }
+      grouped[level].push(cls)
+    })
+    return grouped
+  }
+
+  const getSubjectsForLevel = (levelName) => {
+    const levelClasses = classes.filter(cls => cls.level === levelName)
+    const subjectIds = new Set()
+    
+    schedule.forEach(slot => {
+      const slotClass = levelClasses.find(cls => cls.Id === slot.classId)
+      if (slotClass) {
+        subjectIds.add(slot.subjectId)
+      }
+    })
+    
+    return subjects.filter(subject => subjectIds.has(subject.Id))
+  }
+
+  const addLevel = async () => {
+    if (!newLevel.name || !newLevel.description) {
+      toast.error('Please fill in level name and description')
+      return
+    }
+
+    try {
+      // Create classes for the level
+      const classPromises = []
+      for (let i = 1; i <= parseInt(newLevel.classCount); i++) {
+        const className = `${newLevel.name}${String.fromCharCode(64 + i)}`
+        classPromises.push(
+          classService.create({
+            name: className,
+            description: `${newLevel.description} Class ${String.fromCharCode(64 + i)}`,
+            level: newLevel.name,
+            studentCount: 0,
+            academic_year: new Date().getFullYear().toString()
+          })
+        )
+      }
+      
+      await Promise.all(classPromises)
+      toast.success(`Level ${newLevel.name} created with ${newLevel.classCount} classes`)
+      setNewLevel({ name: '', description: '', classCount: 1, assignedSubjects: [] })
+      setShowLevelForm(false)
+      loadSchedule()
+    } catch (err) {
+      toast.error('Failed to create level')
+      console.error('Error creating level:', err)
+    }
+  }
+
+  const toggleLevel = (levelName) => {
+    setExpandedLevels(prev => ({
+      ...prev,
+      [levelName]: !prev[levelName]
+    }))
+  }
+
+  const removeLevel = async (levelName) => {
+    if (window.confirm(`Are you sure you want to remove level ${levelName} and all its classes?`)) {
+      try {
+        const levelClasses = classes.filter(cls => cls.level === levelName)
+        const deletePromises = levelClasses.map(cls => classService.delete(cls.Id))
+        await Promise.all(deletePromises)
+        
+        toast.success(`Level ${levelName} removed successfully`)
+        loadSchedule()
+      } catch (err) {
+        toast.error('Failed to remove level')
+        console.error('Error removing level:', err)
+      }
+    }
+  }
 const loadSchedule = async () => {
     setLoading(true)
     setError('')
@@ -137,8 +227,131 @@ const getClassName = (classId) => {
     return <Error message={error} onRetry={loadSchedule} type="network" />
   }
 
-  return (
+return (
     <div className="space-y-6">
+      {/* Level Management Section */}
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-900 flex items-center space-x-2">
+            <ApperIcon name="Layers" size={20} />
+            <span>Level Management</span>
+          </h2>
+          <Button
+            variant="primary"
+            size="sm"
+            icon="Plus"
+            onClick={() => setShowLevelForm(!showLevelForm)}
+          >
+            Add Level
+          </Button>
+        </div>
+
+        {showLevelForm && (
+          <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Input
+                label="Level Name"
+                value={newLevel.name}
+                onChange={(e) => setNewLevel(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="e.g., Grade 5"
+              />
+              <Input
+                label="Description"
+                value={newLevel.description}
+                onChange={(e) => setNewLevel(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="e.g., Primary 5"
+              />
+              <Input
+                label="Number of Classes"
+                type="number"
+                min="1"
+                max="10"
+                value={newLevel.classCount}
+                onChange={(e) => setNewLevel(prev => ({ ...prev, classCount: e.target.value }))}
+                placeholder="1"
+              />
+            </div>
+            <div className="flex space-x-2 mt-4">
+              <Button variant="primary" size="sm" onClick={addLevel}>Create Level</Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowLevelForm(false)}>Cancel</Button>
+            </div>
+          </div>
+        )}
+
+        {/* Level Overview */}
+        <div className="space-y-3">
+          {Object.entries(groupClassesByLevel()).map(([levelName, levelClasses]) => (
+            <div key={levelName} className="border rounded-lg">
+              <div 
+                className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50"
+                onClick={() => toggleLevel(levelName)}
+              >
+                <div className="flex items-center space-x-3">
+                  <ApperIcon 
+                    name={expandedLevels[levelName] ? "ChevronDown" : "ChevronRight"} 
+                    size={16} 
+                    className="text-gray-500" 
+                  />
+                  <div>
+                    <h3 className="font-medium text-gray-900">{levelName}</h3>
+                    <p className="text-sm text-gray-500">
+                      {levelClasses.length} classes • {getSubjectsForLevel(levelName).length} subjects
+                    </p>
+                  </div>
+                </div>
+                {levelName !== 'Unassigned' && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    icon="X"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeLevel(levelName)
+                    }}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  />
+                )}
+              </div>
+
+              {expandedLevels[levelName] && (
+                <div className="border-t bg-gray-50 p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 mb-2">Classes</h4>
+                      <div className="space-y-1">
+                        {levelClasses.map(cls => (
+                          <div key={cls.Id} className="text-sm text-gray-600 flex items-center space-x-2">
+                            <ApperIcon name="Users" size={12} />
+                            <span>{cls.name} ({cls.studentCount} students)</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 mb-2">Subjects Taught</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {getSubjectsForLevel(levelName).map(subject => (
+                          <span
+                            key={subject.Id}
+                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${subject.color}`}
+                          >
+                            {subject.name}
+                          </span>
+                        ))}
+                        {getSubjectsForLevel(levelName).length === 0 && (
+                          <span className="text-xs text-gray-500">No subjects assigned</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Weekly Schedule Section */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Weekly Schedule</h2>
         <Button
