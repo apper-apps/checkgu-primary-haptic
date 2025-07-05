@@ -572,16 +572,14 @@ const tabs = [
                           size="sm"
                           icon="X"
                           onClick={() => deleteSubject(subject.Id)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+className="text-red-600 hover:text-red-700 hover:bg-red-50"
                         />
                       </div>
                     ))
                   )}
                 </div>
               </Card>
-</Card>
             </div>
-          </div>
             {/* Level Overview Summary */}
             <Card className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
